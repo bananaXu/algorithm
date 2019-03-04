@@ -1,0 +1,13 @@
+manacher算法:
+rad[i]表示位置i上面的回文半径
+已知求出了rad[1...i]
+对于rad[i+k]
+1、rad[i]-k > rad[i-k]
+rad[i+k] = rad[i-k]
+2、rad[i]-k = rad[i-k]
+rad[i+k]至少是rad[i-k]
+3、rad[i]-k < rad[i-k]
+rad[i-k] = rad[i]-k
+综上所述rad[i]-k = rad[i-k]时rad[i+k] > rad[i-k] 否则 rad[i+k] = MIN(rad[i-k], rad[i]-k);
+但是这种算法只能求奇数长度的子串
+那么将两个字符之间添加一个字符就行

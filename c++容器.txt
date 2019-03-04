@@ -1,0 +1,10 @@
+priority_queue 优先队列，根据堆排序实现
+queue 队列
+deque 双端队列
+map 映射，哈希实现
+multimap 多重映射
+set 集合，基于红黑树，不能有相同节点
+multiset 集合，能有相同节点
+stack 栈
+vector 容器
+list 双向链表

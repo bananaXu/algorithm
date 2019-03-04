@@ -1,0 +1,25 @@
+extgcd扩展欧几里得算法
+求解ax+by = gcd(a, b)
+由欧几里得算法得知gcd(a, b) = gcd(b, a%b)
+所以gcd(a, b) = gcd(b, a%b) b不为0
+令c = b, d = a%b, ax+by = gcd(a, b)的解为(x1, y1), cx+dy = gcd(c, d)的解为(x2, y2)
+而a%b = a-a/b*b;
+所以ax1+by1 = bx2+(a-a/b*b)y2
+a(x1-y2)+b(y1-x2+(a/b)y2) = 0
+得到一组解 x1 = y2, y1 = x2-(a/b)y2
+因此可递归求解 当b = 0时终止
+得到一组解xn*an+yn*0 = gcd(a, b) 得到一组解(1, 0)
+
+int extgcd(int a, int b, int &x, int &y)
+{
+	if (b == 0)
+	{
+		x = 1; y = 0;
+		return a;
+	}
+	int c = extgcd(b, a%b, y, x);
+	y -= a/b*x;
+	return c;
+}
+
+通解为x = x1+b/gcd(a, b)*t, y = y1-a/gcd(a, b)*t

@@ -1,0 +1,91 @@
+方法1：计算n的每一位是否为1
+for (sum = 0; n; n>>=1)
+{
+	sum += n&1;
+}
+
+方法2：每次去掉n右边的一个1
+for (sum = 0; n; ++ sum)
+{
+	n &= n-1;
+}
+
+方法3：建表，n中1的个数=n/2中1的个数+n&1
+
+方法4：平行算法，先将n写成二进制形式，然后相邻位相加，重复这个过程，直到只剩下一位。
+例：217
+1      1     0     1     1     0     0     1
+
+   2      +     1           1     +     1
+           
+          3       	  +          2
+              
+                      5
+int BitCount(unsigned int n) 
+{ 
+    n = (n &0x55555555) + ((n >>1) &0x55555555) ; 
+    n = (n &0x33333333) + ((n >>2) &0x33333333) ; 
+    n = (n &0x0f0f0f0f) + ((n >>4) &0x0f0f0f0f) ; 
+    n = (n &0x00ff00ff) + ((n >>8) &0x00ff00ff) ; 
+    n = (n &0x0000ffff) + ((n >>16) &0x0000ffff) ; 
+    return n;
+}
+改进：当每8位相加时对结果%(2^8-1)即为n中1的个数%(2^8-1)
+int BitCount(unsigned int n) 
+{ 
+    n = (n &0x55555555) + ((n >>1) &0x55555555) ; 
+    n = (n &0x33333333) + ((n >>2) &0x33333333) ; 
+    n = (n &0x0f0f0f0f) + ((n >>4) &0x0f0f0f0f) ; 
+    return n%255; 
+}
+
+方法5：完美的算法
+n的二进制中每三位为一个单位，可以表示成4*a+2*b+c(a, b, c为0或1)
+右移一位则成了2*a+b，右移两位变成了a，1的个数就是a+b+c=(4*a+2*b+c)-(2*a+b)-a;
+经过tmp=n - ((n >>1) &033333333333) - ((n >>2) &011111111111)后每三位变成000， 001， 010， 011这三种
+那么tmp%7即为n中1的个数%7，然而需要考虑的数二进制需要32位
+所以需要将三位变成6位，即将每相邻三位相加，tmp+(tmp>>3),然后去掉重复的
+结果%63为n中1的个数%63
+int BitCount(unsigned int n) 
+{
+    unsigned int tmp = n - ((n >>1) &033333333333) - ((n >>2) &011111111111);
+    return ((tmp + (tmp >>3)) &030707070707) %63;
+}
+
+方法6：位标记法，取出每一位
+struct _byte 
+{ 
+    unsigned a:1; 
+    unsigned b:1; 
+    unsigned c:1; 
+    unsigned d:1; 
+    unsigned e:1; 
+    unsigned f:1; 
+    unsigned g:1; 
+    unsigned h:1; 
+}; 
+
+long get_bit_count( unsigned char b ) 
+{
+    struct _byte *by = (struct _byte*)&b; 
+    return (by->a+by->b+by->c+by->d+by->e+by->f+by->g+by->h); 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					   

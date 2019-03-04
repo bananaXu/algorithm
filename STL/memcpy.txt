@@ -1,0 +1,28 @@
+void* memcpy(void* dst, const void* src, size_t size)
+{
+    if(dst == NULL || src == NULL)
+    {
+        return NULL;
+    }
+    void* res = dst;
+    char* pdst = (char*)dst;
+    char* psrc = (char*)src;
+
+    if(pdst > psrc && pdst < psrc + size) //重叠
+    {
+        pdst = pdst + size - 1;
+        psrc = pdst + size - 1;
+        while(size--)
+        {
+            *pdst-- = *psrc--;
+        }
+    }
+    else //无重叠
+    {
+        while(size--)
+        {
+            *dst++ = *src++;
+        }
+    }
+    return ret;
+}

@@ -1,0 +1,81 @@
+多边形重心公式算法
+多边形的重心公式：
+1、多边形重心公式，需要知道每个顶点坐标，令面积为area，则
+[cpp] view plain copy
+            | Xi  X(i+1)|   
+area = sum{ |           | /2}  
+            | Yi  Y(i+1)|  
+  
+  
+          | Xi  X(i+1)|   
+Cx = sum{ |           | * (Xi + X(i+1) ) / (6 * area) }  
+          | Yi  Y(i+1)|  
+  
+  
+          | Xi  X(i+1)|   
+Cy = sum{ |           | * (Yi + Y(i+1) )/ (6 * area) }  
+          | Yi  Y(i+1)|  
+
+算法：
+[cpp] view plain copy
+#include <iostream>  
+using std::cin;  
+using std::cout;  
+using std::endl;  
+  
+// 定义点坐标  
+struct Point  
+{   
+    double x;  
+    double y;  
+};  
+  
+struct test  
+{  
+    int x;  
+    int y;  
+};  
+  
+Point centerPoint(Point* array, const int point_size);  
+  
+int main(int argc, char* argv[])  
+{  
+  const int point_size = 4; // 顶点个数  
+  Point array[point_size] = {{1,1}, {1,2}, {2,2}, {2,1}}; //顶点数组    
+  Point center = centerPoint(array,point_size);  
+  cout<<"输出图多边形重心:";  
+  cout<<"("<<center.x <<", "<<center.y<<")"<<endl;  
+  return 0;  
+}  
+Point centerPoint(Point* array,const int point_size)  
+{  
+  double temp;  
+  double area=0;  
+  double cx = 0, cy = 0;  
+  for (int i = 0;i<point_size-1;i++)  
+  {  
+    temp = array[i].x * array[i+1].y - array[i].y *array[i+1].x;  
+    area+= temp;  
+    cx+= temp * (array[i].x+array[i+1].x);  
+    cy+= temp * (array[i].y+array[i+1].y);  
+  }  
+  temp = array[point_size-1].x * array[0].y - array[point_size-1].y *array[0].x;  
+  area+= temp;  
+  cx+= temp * (array[point_size-1].x+array[0].x);  
+  cy+= temp * (array[point_size-1].y+array[0].y);  
+  
+  area = area/2;  
+  cx = cx/(6*area);  
+  cy = cy/(6*area);  
+  
+  Point C = {cx,cy};  
+  return C;  
+}  
+
+2、
+X = (x1*M1+x2*M2+...+xn*Mn) /(M1+M2+....+Mn)
+nY = (y1*M1+y2*M2+...+yn*Mn) /(M1+M2+....+Mn)
+公式解析：x1,y1;x2,y2;...xn,yn依次为多边形逆时针的坐标。
+取一个扇心（x0,y0)（可以不在多边形内）和相邻两点组成三角形面积:
+如（x0,y0)(x1,y1)(x2,y2)组成的三角形为M1，以此类推。然后根据
+公式就可得结果。

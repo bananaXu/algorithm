@@ -1,0 +1,21 @@
+#include <algorithm>
+struct node
+{
+	int val;
+	int index;
+};
+
+int n;
+cin >> n;
+node *arr = new node[n+1];
+int *a = new int[n+1];
+for(i = 1; i <= n; i ++)
+{
+	cin >> arr[i].val;
+	arr[i].index = i;
+}
+sort(arr, arr+n+1, cmp);
+for(i = 1; i <= n; i ++)
+{
+	a[arr[i].indes] = i;
+}

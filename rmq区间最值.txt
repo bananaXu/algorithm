@@ -1,0 +1,18 @@
+1、st算法(预处理o(nlogn),查询o(1),不能更新)
+rmq问题
+f[i][j] = min(f[i][j-1], f[i+(1<<j-1)][j-1])
+f[i][j] 表示从i开始2^j个数中的最小值
+for (int j = 0; j <= 20; j ++)
+{
+	for (int i = 1; i+(1<<j) <= n+1; i ++)
+		f[i][j] = min(f[i][j-1], f[i+(1<<j-1)][j-1]);
+}
+
+
+2、线段树(建树o(nlogn),查询o(logn),能更新)
+buildTree()
+{}
+updateValue()
+{}
+searchValue()
+{}

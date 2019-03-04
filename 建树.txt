@@ -1,0 +1,31 @@
+struct Edge
+{
+	int l;
+	int r;
+	int val;
+}edge[MAX];
+
+head[2*MAX+10];
+
+for(i = 1; i <= 2*MAX; i ++)
+{
+	head[i] = -1;
+}
+
+void isnert(int l, int r, int val) // 插入边
+{
+	edge[i].val = val;
+	edge[i].next = head[l];
+	head[l] = i++;
+}
+
+for(i = 1; i <= n; i ++) // 无向图边的输入
+{
+	cin >> l >> r >> val;
+	insert(l, r, val);
+	insert(r, l, val);
+}
+
+for(i = head[u]; i != -1; i = edge[i].next) // 循环查找以u为顶点的边
+{
+}

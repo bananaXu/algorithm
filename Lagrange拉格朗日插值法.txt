@@ -1,0 +1,50 @@
+#include <stdio.h>
+#define MAX 20
+//输入点的结构
+typedef struct stPoint
+{
+    double x;
+    double y;
+} Point;
+
+int main()
+{
+    int n;
+    int i,j;
+    Point points[MAX];
+    double x,tmp,lagrange=0;//这个x是你将要计算的f(x)插值点，tmp是拉格朗日基函数，larange是根据拉格朗日函数得出f(x)的值
+    printf("请输入被插值点的个数:(它是从0开始的，所以输入3代表4个点）");
+    scanf("%d",&n);
+    if(n>MAX)
+    {
+        printf("您输入的个数过多．");
+        return 1;
+    }
+    if(n<=0)
+    {
+        printf("您输入的点数太少．");
+        return 1;
+    }
+   //输入插值点的x值和y值
+  printf("请输入插值点的x值和y值：\n");
+   for(i=0;i<=n;i++)
+      scanf("%lf%lf",&points[i].x,&points[i].y);
+    //输入计算拉格朗日插值多项式的x值
+    printf("\n请输入计算拉格朗日插值多项式的x值:");
+    scanf("%lf",&x);
+    //利用拉格朗日插值公式计算函数x值的对应f(x)
+    for(i=0;i<=n;i++)
+    {
+        for(j=0,tmp=1;j<=n;j++)
+        {
+            if(j==i)   //去掉xi与xj相等的情况
+            continue;  //范德蒙行列式下标就是j!=k,相等分母为０就没意义了
+            tmp=tmp*(x-points[j].x)/(points[i].x-points[j].x);//这个就是套公式，没什么难度
+            //tmp是拉格朗日基函数
+        }
+        lagrange=lagrange+tmp*points[i].y; //最后计算基函数*y,全部加起来，就是该x项的拉格朗日函数了
+    }  
+    //拉格朗日函数计算完毕，代入所求函数x的值，求解就ok了
+    printf("\n拉格朗日函数f(%lf)=%lf\n",x,lagrange);
+    return 0;
+}

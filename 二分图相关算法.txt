@@ -1,0 +1,200 @@
+二分图最大匹配：
+匹配为边的集合，任意两条边没有公共点，包含边数最多的匹配就是最大匹配
+匈牙利算法：
+一个匹配为最大匹配当且仅当匹配中不存在交错路
+交错路：一条路径为长度为奇数，奇数边为未匹配边，偶数边为匹配边
+增广：将交错路反向
+算法思想：
+1、从左边的一个顶点开始，找与它连接的右边的点，看是否是未匹配点
+2、如果是未匹配点，则找到，否则，从与它相匹配的左边的顶点开始寻找
+3、重复1、2
+bool Dfs_Match(int x) // dfs匈牙利匹配
+{
+	int i;
+	for (i = head[x]; i != -1; i = edge[i].next)
+	{
+		int r = edge[i].r;
+		if (!used[r]) // 不在交替路中
+		{
+			used[r] = 1;
+			if (match[r] == -1 || Dfs_Match(match[r])) // 找到未匹配点，将路径反向
+			{
+				match[r] = x;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+int Bfs_Match()
+{
+	memset(match, -1, sizeof(match)); // 匹配的点
+	memset(pre, -1, sizeof(pre)); // 记录交错路
+	queue <int> Q; // 记录左边顶点连接的右边点
+	int ans = 0; // 增广次数
+	for (int i = 1; i <= left_num; i ++)
+	{
+		if (match(i) != -1)
+			continue;
+		while (!Q.empty()) Q.pop(); // 置空
+		Q.push(i);
+		while (!Q.empty())
+		{
+			int u = Q.front();
+			Q.pop();
+			for (int j = head[u]; j != -1; j = edge[j].next) // 从左顶点u开始，寻找与其相连的右顶点
+			{
+				int r = edge[j].r;
+				if (match(r) > 0) // 此点是匹配点
+				{
+					pre[match[r]] = u;
+					Q.push(r);
+				]
+				else // 找到未匹配点
+				{
+					int x = u, y = v;
+					while (t != -1) // 反向
+					{
+						int t = match[x];
+						match[x] = y;
+						match[y] = x;
+						x = pre[x];
+						y = t;
+					}
+				}
+			}
+		}
+		if (match(i) != -1)
+			ans ++;
+	}
+}
+
+
+二分图最小覆盖：
+图的覆盖：寻找一个点集，使得所有边都至少有一点在点集中
+二分图的最小覆盖 = 最大匹配
+
+二分图的最大独立集：
+图的独立集：寻找一个点集，其中任意两点在图中无对应边
+二分图的最大独立集 = 图的点数-最大匹配数
+证明：最小覆盖后剩下的点相互之间没有对应边
+
+二分图的最小路径覆盖：
+最小路径覆盖问题：用尽量少的不相交的路径覆盖所有有向无环图所有顶点
+将每个点分成两个，分别放到X、Y集合中，连接Xa、Yb边
+二分图最小路径覆盖 = 图的点数-最大匹配数
+证明：1、当没有边时，需要n条路径
+	  2、增加一条边时，则少需要一条路径
+	  3、任务就是找出最多独立的边
+	  4、转换成了求最大匹配
+
+二分图最优匹配：
+二分图的每条边有权值，求一个匹配使得匹配边上的权值最大
+最优匹配也是一个完备匹配，即每个顶点都被匹配，如果个数不相等，可以通过补零来实现转换。
+可行顶标：L(x)为x所对应的顶标值，每条边都有L(x)+L(y) >= W(x, y)
+相等子图：只包含L(x)+L(y) = W(x, y)的子图
+定理：如果一个相等子图中包含完备子图，那么这个匹配就是最优匹配。
+KM算法：
+int dfs(int x) // 为x寻找匹配边
+{
+	vlx[x] = 1;
+	for (int i = head[x]; i != -1; i = edge[i].next)
+	{
+		int y = edge[i].r, val = edge[i].val;
+		if (vly[y])
+			continue;
+		int t = lx[x]+ly[y]-val;
+		if (!t) // 符号要求
+		{
+			vis[y] = 1;
+			if (match[y] == -1 || dfs(y))
+			{
+				match[y] = x;
+				return true;
+			}
+		}
+		else
+		{
+			MinNeed[y] = MIN(MinNeed[y], t); // y需要增加多少
+		}
+	}
+}
+
+int KM()
+{
+	memset(match, -1, sizeof(match));
+	memset(ly, 0, sizeof(ly)); // 右边全初始化0
+	for (int i = 1; i <= n; i ++)
+	{
+		lx[i] = 0;
+		for (int j = head[i]; j != -1; j = edge[j].next) // 左边初始化为所有边中最大的边值
+			lx[i] = MAX(lx[i], edge[j].val);
+	}
+	for (i = 1; i <= n; i ++)
+	{
+		memset(MinNeed, INF, (n+1)*sizeof(int)); // 最少需要改变多少才能和xi匹配
+		while (1)
+		{
+			memset(vlx, 0, sizeof(vlx));
+			memset(vly, 0, sizeof(vly));
+			if (dfs(i)) // 找到匹配
+				break;
+			Min = INF;
+			for (j = 1; j <= n; j ++)
+			{
+				if (!vly[j])
+					Min = MIN(Min, MinNeed[j]);
+			}
+			for (j = 1; j <= n; j ++)
+			{
+				if (vlx[j]) // 访问过的x减少Min
+					lx[j] -= Min;
+				if (vly[j]) // 访问过的y增加Min
+					ly[j] += Min;
+				else // 由于x都减少Min，所以和xi匹配需求减少了Min
+					MinNeed[j] -= Min;
+			}
+		}
+	}
+	// 匹配完成
+	int sum = 0;
+	for (i = 1; i <= n; i ++)
+	{
+		for (j = head[i]; j != -1; j = edge[j].next)
+		{
+			int y = edge[j].r;
+			if (match[y] == x)
+			{
+				sum += edge[j].val;
+				break;
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
